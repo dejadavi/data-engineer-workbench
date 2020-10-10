@@ -1,0 +1,4 @@
+GRANT ALL PRIVILEGES ON *.* TO 'hiveuser';
+FLUSH PRIVILEGES;
+
+
