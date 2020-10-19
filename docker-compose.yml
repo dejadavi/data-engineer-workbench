@@ -19,11 +19,11 @@ services:
       spark-network:
         ipv4_address: 10.5.0.2
     volumes:
-       - ./files/sparkdata:/opt/spark/data
-       - ./files/sparkdata/apps:/opt/spark/data/spark-apps
+       - ./files/spark/data:/opt/spark/data
+       - ./files/spark/data/apps:/opt/spark/data/spark-apps
        - ./files/sparkdata/events:/opt/spark/data/spark-events
        - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/sparkdata
+       - $SPARK_DATA_DIR:/home/user/root
     environment:
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -47,7 +47,7 @@ services:
        - ./files/spark/data/apps:/opt/spark/data/spark-apps
        - ./files/spark/data/spark-events:/opt/spark/data/spark-events
        - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/sparkdata
+       - $SPARK_DATA_DIR:/home/user/root
     environment:
       - "SPARK_MASTER_HOST=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -56,7 +56,7 @@ services:
       - "SPARK_WORKER_PORT=6066"
       - "HOST=local"
       - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
-      - $SPARK_DATA_DIR:/sparkdata
+      - $SPARK_DATA_DIR:/home/user/root
   spark-worker-1:
     image: spark-worker:2.7.7
     container_name: spark-worker-1
@@ -82,7 +82,7 @@ services:
        - ./files/spark/data/apps:/opt/spark/data/spark-apps
        - ./files/spark/data/spark-events:/opt/spark/data/spark-events
        - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/sparkdata
+       - $SPARK_DATA_DIR:/home/user/root
   spark-worker-2:
     image: spark-worker:2.7.7
     container_name: spark-worker-2
@@ -100,7 +100,6 @@ services:
       - "SPARK_WORKER_WEBUI_PORT=8081"
       - "HOST=local"
       - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
-      #https://stackoverflow.com/questions/32719007/spark-spark-public-dns-and-spark-local-ip-on-stand-alone-cluster-with-docker-con
     networks: 
       spark-network:
         ipv4_address: 10.5.0.4
@@ -109,7 +108,7 @@ services:
        - ./files/spark-data-apps:/opt/spark/data/spark-apps
        - ./files/spark-data-events:/opt/spark/data/spark-events
        - ./files/spark-data-local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/sparkdata
+       - $SPARK_DATA_DIR:/home/user/jovyan
   spark-worker-3:
     image: spark-worker:2.7.7
     container_name: spark-worker-3
@@ -132,11 +131,11 @@ services:
       spark-network:
         ipv4_address: 10.5.0.5
     volumes:
-       - ./files/spark-data:/opt/spark/data
-       - ./files/spark-data-apps:/opt/spark/data/spark-apps
-       - ./files/spark-data-events:/opt/spark/data/spark-events
-       - ./files/spark-data-local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/sparkdata
+       - ./files/spark/data:/opt/spark/data
+       - ./files/spark/data/apps:/opt/spark/data/spark-apps
+       - ./files/spark/data/events:/opt/spark/data/spark-events
+       - ./files/spark/data/local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/home/user/root
   jupyterlab:
     image: jupyterlab:latest
     container_name: jupyterlab

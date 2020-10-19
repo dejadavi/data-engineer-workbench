@@ -22,9 +22,8 @@ ENV SPARK_MASTER_PORT=7077
 ENV SPARK_MASTER=spark://spark-master:7077
 ENV SPARK_MASTER_WEBUI_PORT=8080
 ENV SPARK_MASTER_LOG=/opt/spark/logs
+ENV SPARK_WORKER_LOG=/opt/spark/logs
 ENV PYSPARK_PYTHON=/usr/bin/python3
-
-ENV PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:/opt/hive/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME:$PATH
 
 RUN mkdir -p /opt/spark
 RUN mkdir -p /opt/hive/data && \ 
@@ -114,7 +113,7 @@ COPY spark/*.xml $SPARK_HOME/
 COPY spark/*.conf $SPARK_HOME/conf/
 COPY hadoop/* $HADOOP_HOME/etc/hadoop/
 COPY hive/* $HIVE_HOME/conf/
-RUN export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME:$HIVE_HOME/bin:$HIVE_HOME/sbin:$PATH
+RUN export PATH=$SPARK_HOME:$SPARK_HOME/bin:$SPARK_HOME/jar:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME:$HIVE_HOME/bin:$HIVE_HOME/sbin:$PATH
 RUN export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 

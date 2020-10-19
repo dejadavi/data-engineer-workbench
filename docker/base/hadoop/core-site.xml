@@ -1,11 +1,11 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>file://sparkdata</value>
+    <value>file://home/user/root</value>
   </property>
   <property>
     <name>fs.default.name</name>
-    <value>file://sparkdata</value>
+    <value>file://home/user/root</value>
   </property>
   <property>
     <name>hadoop.tmp.dir</name>
