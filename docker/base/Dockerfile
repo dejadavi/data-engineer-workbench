@@ -8,32 +8,29 @@ ENV HADOOP_HOME=/opt/hadoop
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop/conf
 ENV HADOOP_COMMON_DIR=/opt/hadoop
 ENV HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+ENV HADOOP_OPTS=-Djava.library.path=$HADOOP_HOME/lib
 
 ENV SCALA_VERSION=2.11.12
 ENV SCALA_HOME=/usr/share/scala
 ENV SCALA_HOME=/usr/share/scala
 ENV HIVE_VERSION=2.3.7
 ENV HIVE_HOME=/opt/hive
-ENV HIVE_HOME=/opt/hive
 
 ENV SPARK_VERSION=2.4.7
 ENV SPARK_HOME=/opt/spark
 ENV SPARK_MASTER_PORT=7077
 ENV SPARK_MASTER=spark://spark-master:7077
-# ENV SPARK_MASTER=localhost:7077
 ENV SPARK_MASTER_WEBUI_PORT=8080
 ENV SPARK_MASTER_LOG=/opt/spark/logs
 ENV PYSPARK_PYTHON=/usr/bin/python3
 
 ENV PATH=$SPARK_HOME/bin:$SPARK_HOME/sbin:/opt/hive/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$HIVE_HOME:$PATH
 
-RUN mkdir -p /opt
-RUN mkdir -p /opt/spark/tmp && \
-    mkdir -p /opt/hive && \ 
-    mkdir -p /opt/hadoop && \
+RUN mkdir -p /opt/spark
+RUN mkdir -p /opt/hive/data && \ 
+    mkdir -p /opt/hadoop/data && \
     mkdir -p /opt/livy && \
-    mkdir -p /tmp/hadoop-$USER_NAME && \
-    mkdir -p /tmp/spark-events
+    mkdir -p /tmp/hadoop-$USER_NAME
 
 WORKDIR /tmp/
 RUN apt-get update -y &&\
@@ -85,7 +82,7 @@ RUN cd "/tmp" && \
     mv "/tmp/scala-${SCALA_VERSION}/bin" "/tmp/scala-${SCALA_VERSION}/lib" "${SCALA_HOME}" && \
     ln -s "${SCALA_HOME}/bin/"* "/usr/bin/" && \
     rm -rf "/tmp/"*
-RUN export PATH="/usr/local/sbt/bin:$PATH" && \
+RUN cd /tmp && export PATH="/usr/local/sbt/bin:$PATH" && \
     apt-get update -y && \
     apt-get install ca-certificates wget tar && \
     mkdir -p "/usr/local/sbt" && \
@@ -93,23 +90,35 @@ RUN export PATH="/usr/local/sbt/bin:$PATH" && \
     sbt sbtVersion && \
     rm -rf "/tmp/"* && \ 
     rm -rf /var/lib/apt/lists/* 
-RUN wget --no-verbose "http://www.gtlib.gatech.edu/pub/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz" && \
+RUN cd /tmp && wget --no-verbose "http://www.gtlib.gatech.edu/pub/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz" && \
     tar xzf hadoop-${HADOOP_VERSION}.tar.gz && \
     mv hadoop-${HADOOP_VERSION}/* /opt/hadoop && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
-RUN wget --no-verbose "https://apache.cs.utah.edu/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz" && \
+RUN cd /tmp && wget --no-verbose "https://apache.cs.utah.edu/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz" && \
     tar xzf "spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz" && \
     mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}/* /opt/spark && \
     rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz
-
-RUN wget --no-verbose "https://downloads.apache.org/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz" && \
+RUN cd /tmp && wget --no-verbose "https://downloads.apache.org/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz" && \
     tar xzf "apache-hive-${HIVE_VERSION}-bin.tar.gz" && \
     mv "apache-hive-${HIVE_VERSION}-bin"/* /opt/hive && \
     rm "apache-hive-${HIVE_VERSION}-bin.tar.gz"
+
+RUN mkdir -p /opt/spark/data/spark-events &&\
+    mkdir -p /opt/spark/data/spark-apps &&\
+    mkdir -p /opt/spark/data/local &&\
+    mkdir -p /tmp/spark-events &&\
+    mkdir -p /sparkdata &&\
+    mkdir -p /opt/spark/logs
+
 COPY spark/*.xml $SPARK_HOME/
 COPY spark/*.conf $SPARK_HOME/conf/
 COPY hadoop/* $HADOOP_HOME/etc/hadoop/
 COPY hive/* $HIVE_HOME/conf/
+RUN export PATH=$HADOOP_HOME/bin:$HADOOP_HOME/sbin:$JAVA_HOME:$HIVE_HOME/bin:$HIVE_HOME/sbin:$PATH
+RUN export PATH=/usr/local/bin:/usr/local/sbin:$PATH
+
 
 WORKDIR /opt/spark
-# RUN mvn verify
+RUN mvn  install dependency:copy-dependencies
+RUN cp -r $SPARK_HOME/target/dependency/* $SPARK_HOME/jars/ &&\
+    rm -rf $SPARK_HOME/dependency && rm -rf ~/.m2

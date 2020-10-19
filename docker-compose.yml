@@ -19,15 +19,20 @@ services:
       spark-network:
         ipv4_address: 10.5.0.2
     volumes:
-       - ./files/spark-apps:/opt/spark-apps
-       - ./files/spark-data:/opt/spark-data
-       - ./files/spark-events:/tmp/spark-events
+       - ./files/sparkdata:/opt/spark/data
+       - ./files/sparkdata/apps:/opt/spark/data/spark-apps
+       - ./files/sparkdata/events:/opt/spark/data/spark-events
+       - ./files/spark/data/local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/sparkdata
     environment:
       - "SPARK_LOCAL_IP=spark-master"
+      - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
+      - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "SPARK_MASTER_WEBUI_PORT=8080"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/tmp"
+      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
   livy:
     image: livy:0.7.0
     container_name: livy
@@ -38,18 +43,20 @@ services:
       spark-network:
         ipv4_address: 10.5.0.6
     volumes:
-        - ./files/spark-apps:/opt/spark-apps
-        - ./files/spark-data:/opt/spark-data
-        - ./files/spark/spark-tmp:/opt/spark/tmp
-        - ./files/spark-events:/tmp/spark-events
+       - ./files/spark/data:/opt/spark/data
+       - ./files/spark/data/apps:/opt/spark/data/spark-apps
+       - ./files/spark/data/spark-events:/opt/spark/data/spark-events
+       - ./files/spark/data/local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/sparkdata
     environment:
       - "SPARK_MASTER_HOST=spark-master"
+      - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_LOCAL_IP=livy"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/tmp"
-      - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
+      - $SPARK_DATA_DIR:/sparkdata
   spark-worker-1:
     image: spark-worker:2.7.7
     container_name: spark-worker-1
@@ -61,19 +68,21 @@ services:
     env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-1"
+      - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
-      - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/tmp"
       - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "HOST=local"
+      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
     networks: 
       spark-network:
         ipv4_address: 10.5.0.3
     volumes:
-       - ./files/spark-apps:/opt/spark-apps
-       - ./files/spark-data:/opt/spark-data
-       - ./files/spark/spark-tmp:/opt/spark/tmp
-       - ./files/spark-events:/tmp/spark-events
+       - ./files/spark/data:/opt/spark/data
+       - ./files/spark/data/apps:/opt/spark/data/spark-apps
+       - ./files/spark/data/spark-events:/opt/spark/data/spark-events
+       - ./files/spark/data/local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/sparkdata
   spark-worker-2:
     image: spark-worker:2.7.7
     container_name: spark-worker-2
@@ -81,25 +90,26 @@ services:
     depends_on:
       - spark-master
     ports:
-      - "8084:8081"
+      - "8084:8084"
     env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-2"
-      - "SPARK_DRIVER_HOST=host.docker.internal"
-      - "SPARK_DRIVER_PORT=8084"
+      - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
-      - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/tmp"
       - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "HOST=local"
+      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
       #https://stackoverflow.com/questions/32719007/spark-spark-public-dns-and-spark-local-ip-on-stand-alone-cluster-with-docker-con
     networks: 
       spark-network:
         ipv4_address: 10.5.0.4
     volumes:
-       - ./files/spark-apps:/opt/spark-apps
-       - ./files/spark-data:/opt/spark-data
-       - ./files/spark-events:/tmp/spark-events
+       - ./files/spark-data:/opt/spark/data
+       - ./files/spark-data-apps:/opt/spark/data/spark-apps
+       - ./files/spark-data-events:/opt/spark/data/spark-events
+       - ./files/spark-data-local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/sparkdata
   spark-worker-3:
     image: spark-worker:2.7.7
     container_name: spark-worker-3
@@ -107,24 +117,26 @@ services:
     depends_on:
       - spark-master
     ports:
-      - "8085:8081"
+      - "8085:8085"
     env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-3"
-      - "SPARK_DRIVER_HOST=host.docker.internal"
-      - "SPARK_DRIVER_PORT=8085"
+      - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
-      - "SPARK_LOCAL_DIRS=/opt/spark/tmp"
+      - "SPARK_WORKER_WEBUI_PORT=8085"
       - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
+      - "HOST=local"
     networks: 
       spark-network:
         ipv4_address: 10.5.0.5
     volumes:
-       - ./files/spark-apps:/opt/spark-apps
-       - ./files/spark-data:/opt/spark-data
-       - ./files/spark-events:/tmp/spark-events
-       - ./files/spark/spark-tmp:/opt/spark/tmp
+       - ./files/spark-data:/opt/spark/data
+       - ./files/spark-data-apps:/opt/spark/data/spark-apps
+       - ./files/spark-data-events:/opt/spark/data/spark-events
+       - ./files/spark-data-local:/opt/spark/data/local
+       - $SPARK_DATA_DIR:/sparkdata
   jupyterlab:
     image: jupyterlab:latest
     container_name: jupyterlab

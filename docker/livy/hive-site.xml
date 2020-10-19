@@ -21,17 +21,17 @@
 </property>
 <property>
     <name>hive.exec.local.scratchdir</name>
-    <value>${env.HOME}/.hadoop/scratchdir</value>
+    <value>${env.HIVE_HOME}/data/scratchdir</value>
     <description>Local scratch space for Hive jobs</description>
 </property>
 <property>
     <name>hive.downloaded.resources.dir</name>
-    <value>${env.HOME}/.hadoop/temp</value>
+    <value>${env.HIVE_HOME}/data/temp</value>
     <description>Temporary local directory for added resources in the remote file system.</description>
 </property>
 <property>
     <name>hive.querylog.location</name>
-    <value>${env.HOME}/.hadoop/querylog</value>
+    <value>${env.HIVE_HOME}/hive/data/querylog</value>
     <description>Location of Hive run time structured log file</description>
 </property>
 <property>
@@ -49,12 +49,12 @@
 </property>
 <property>
   <name>hive.metastore.warehouse.dir</name>
-  <value>${env.HOME}/.hadoop/warehouse</value>
+  <value>${env.HIVE_HOME}/data/warehouse</value>
   <description>location of default database for the warehouse</description>
 </property>
 <property>
   <name>mapred.local.dir </name>
-  <value>${env.HOME}/.hadoop/tmp</value>
+  <value>${env.HIVE_HOME}/data/tmp</value>
   <description>location of default database for the warehouse</description>
 </property>
 </configuration>

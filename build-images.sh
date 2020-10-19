@@ -2,6 +2,13 @@
 
 set -e
 
+mkdir -p ./files/jupyter
+mkdir -p ./files/spark/data/spark-events
+mkdir -p ./files/spark/data/spark-events
+mkdir -p ./files/spark/data/tmp
+mkdir -p ./files/hive/data
+mkdir -p ./files/hadoop/data
+
 docker build -t spark-base:2.7.7 ./docker/base
 docker build -t spark-master:2.7.7 ./docker/spark-master
 docker build -t spark-worker:2.7.7 ./docker/spark-worker

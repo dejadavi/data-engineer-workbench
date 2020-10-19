@@ -1,15 +1,15 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>file://</value>
+    <value>file://sparkdata</value>
   </property>
   <property>
     <name>fs.default.name</name>
-    <value>file://</value>
+    <value>file://sparkdata</value>
   </property>
   <property>
     <name>hadoop.tmp.dir</name>
-    <value></value>
+    <value>/tmp/hadoop-${user.name}</value>
     <description>A base for other temporary directories.</description>
   </property>
 </configuration>
