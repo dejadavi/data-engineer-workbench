@@ -1,6 +1,7 @@
 qgrid
 great-expectations
 pandas
-fastavro
 seaborn
 matplotlib
+numpy
+awscli

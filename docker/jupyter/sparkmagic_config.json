@@ -48,10 +48,6 @@
 
   "ignore_ssl_errors": false,
 
-  "session_configs": {
-    "master": "spark://spark-master:7077"
-  },
-
   "use_auto_viz": true,
   "coerce_dataframe": true,
   "max_results_sql": 2500,

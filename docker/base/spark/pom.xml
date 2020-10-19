@@ -3,44 +3,37 @@
   <groupId>com.desmond-data-services</groupId>
   <artifactId>localsparkgoodies</artifactId>
   <version>1</version>
-      <repositories>
-        <repository>
-            <id>JohnSnowLabs</id>
-            <name>John Snow Labs</name>
-            <url>https://dl.bintray.com/spark-packages/maven/</url>
-        </repository>
-  </repositories>
     <dependencies>
         <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-bundle</artifactId>
-            <version>1.11.375</version>
+            <version>1.7.4</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-aws</artifactId>
-            <version>3.2.1</version>
-        </dependency>
+            <version>2.7.7</version>
+        </dependency> -->
         <dependency> 
             <groupId>com.databricks</groupId>
-            <artifactId>spark-xml_2.12</artifactId>
-            <version>0.9.0</version>
+            <artifactId>spark-xml_2.11</artifactId>
+            <version>0.3.1</version>
         </dependency>
-        <dependency>
+        <!-- <dependency>
             <groupId>net.java.dev.jets3t</groupId>
             <artifactId>jets3t</artifactId>
             <version>0.9.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.spark</groupId>
-            <artifactId>spark-avro_2.12</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
+            <artifactId>spark-avro_2.11</artifactId>
+            <version>2.7.7</version>
+        </dependency> -->
+        <!-- <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>27.1-jre</version>
-        </dependency>
+        </dependency> -->
         <dependency>
           <groupId>mysql</groupId>
           <artifactId>mysql-connector-java</artifactId>
@@ -51,17 +44,6 @@
           <artifactId>avro</artifactId>
           <version>1.8.2</version>
       </dependency>
-        <dependency>
-            <groupId>JohnSnowLabs</groupId>
-            <artifactId>spark-nlp</artifactId>
-            <version>1.2.3</version>
-            <exclusions>
-                <exclusion>  <!-- declare the exclusion here -->
-                    <groupId>org.scala-lang</groupId>
-                        <artifactId>scala-library</artifactId>
-                </exclusion>
-            </exclusions> 
-        </dependency>
     </dependencies>
   <build>
     <plugins>
