@@ -1,0 +1,5 @@
+files/spark/spark-tmp/*
+files/jupyter/spark-tmp/*
+files/spark-events/*
+files/spark-apps/*
+files/spark-data/*
