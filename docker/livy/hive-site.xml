@@ -53,6 +53,10 @@
   <description>location of default database for the warehouse</description>
 </property>
 <property>
+<name>hive.aux.jars.path</name>
+<value>/opt/spark/jars/jars/mysql-connector-java-8.0.20.jar</value>
+</property>
+<property>
   <name>mapred.local.dir </name>
   <value>${env.HIVE_HOME}/data/tmp</value>
   <description>location of default database for the warehouse</description>

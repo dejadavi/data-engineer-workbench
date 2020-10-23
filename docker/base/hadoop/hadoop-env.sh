@@ -34,8 +34,7 @@
 # may want to provide OVERWRITING values on the command line.
 # For example:
 #
-#  JAVA_HOME=/usr/java/testing hdfs dfs -ls
-#
+
 # Therefore, the vast majority (BUT NOT ALL!) of these defaults
 # are configured for substitution and not append.  If append
 # is preferable, modify this file accordingly.
@@ -52,11 +51,11 @@
 # The java implementation to use. By default, this environment
 # variable is REQUIRED on ALL platforms except OS X!
 
+export JAVA_HOME=/usr/local/openjdk-8
 
 # Location of Hadoop.  By default, Hadoop will attempt to determine
 # this location based upon its execution path.
-export HADOOP_HOME=/opt/hadoop
-
+export HADOOP_HOME=/opt/hadoop/hadoop-2.7.7
 # Location of Hadoop's configuration information.  i.e., where this
 # file is living. If this is not defined, Hadoop will attempt to
 # locate it based upon its execution path.
@@ -65,7 +64,7 @@ export HADOOP_HOME=/opt/hadoop
 # /etc/profile.d or equivalent.  Some options (such as
 # --config) may react strangely otherwise.
 #
-export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
 
 # The maximum amount of heap to use (Java -Xmx).  If no unit
 # is provided, it will be converted to MB.  Daemons will
@@ -87,7 +86,7 @@ export HADOOP_CONF_DIR=${HADOOP_HOME}/etc/hadoop
 
 # Extra Java runtime options for all Hadoop commands. We don't support
 # IPv6 yet/still, so by default the preference is set to IPv4.
-export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true"
+# export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true"
 # For Kerberos debugging, an extended option set logs more information
 # export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true -Dsun.security.krb5.debug=true -Dsun.security.spnego.debug"
 
@@ -123,10 +122,11 @@ export HADOOP_OS_TYPE=${HADOOP_OS_TYPE:-$(uname -s)}
 # Similarly, end users should utilize ${HOME}/.hadooprc .
 # This variable should ideally only be used as a short-cut,
 # interactive way for temporary additions on the command line.
-# export HADOOP_CLASSPATH="/some/cool/path/on/your/machine"
+export HADOOP_CLASSPATH=$(hadoop classpath):"$HADOOP_HOME"/share/hadoop/tools/lib/*
 
 # Should HADOOP_CLASSPATH be first in the official CLASSPATH?
-# export HADOOP_USER_CLASSPATH_FIRST="yes"
+export HADOOP_USER_CLASSPATH_FIRST="yes"
+
 
 # If HADOOP_USE_CLIENT_CLASSLOADER is set, the classpath along
 # with the main jar are handled by a separate isolated
@@ -416,5 +416,7 @@ export HADOOP_OS_TYPE=${HADOOP_OS_TYPE:-$(uname -s)}
 
 # For example, to limit who can execute the namenode command,
 # export HDFS_NAMENODE_USER=hdfs
+export HADOOP_COMMON_DIR=$HADOOP_HOME/share/hadoop/common
 export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
+export JAVA_LIBRARY_PATH=$HADOOP_HOME/lib/native:$JAVA_LIBRARY_PATH

@@ -3,7 +3,9 @@
 . "/opt/spark/sbin/spark-config.sh"
 . "/opt/spark/bin/load-spark-env.sh"
 
-$SPARK_MASTER_LOG -p $SPARK_WORKER_LOG
+/init-hive.sh
+
+mkdir -p $SPARK_WORKER_LOG
 
 ln -sf /dev/stdout $SPARK_WORKER_LOG/spark-worker.out
 

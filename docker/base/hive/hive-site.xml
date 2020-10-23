@@ -20,6 +20,10 @@
   <value>false</value>
 </property>
 <property>
+<name>hive.aux.jars.path</name>
+<value>/opt/spark/jars/jars/mysql-connector-java-8.0.20.jar</value>
+</property>
+<property>
     <name>hive.exec.local.scratchdir</name>
     <value>${env.HIVE_HOME}/data/scratchdir</value>
     <description>Local scratch space for Hive jobs</description>

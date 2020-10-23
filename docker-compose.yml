@@ -12,6 +12,8 @@ services:
     image: spark-master:2.7.7
     container_name: spark-master
     hostname: spark-master
+    depends_on:
+      - mysql
     ports:
       - "8080:8080"
       - "7077:7077"
@@ -19,11 +21,10 @@ services:
       spark-network:
         ipv4_address: 10.5.0.2
     volumes:
-       - ./files/spark/data:/opt/spark/data
-       - ./files/spark/data/apps:/opt/spark/data/spark-apps
-       - ./files/sparkdata/events:/opt/spark/data/spark-events
-       - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/home/user/root
+       - ./files/spark:/opt/spark/data
+       - ./files/hive:/opt/hive/data
+       - ./files/hadoop:/opt/hadoop/data
+       - $HOME/Documents:/home/user/root
     environment:
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -32,7 +33,6 @@ services:
       - "SPARK_WORKER_WEBUI_PORT=8081"
       - "SPARK_MASTER_WEBUI_PORT=8080"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
   livy:
     image: livy:0.7.0
     container_name: livy
@@ -43,10 +43,9 @@ services:
       spark-network:
         ipv4_address: 10.5.0.6
     volumes:
-       - ./files/spark/data:/opt/spark/data
-       - ./files/spark/data/apps:/opt/spark/data/spark-apps
-       - ./files/spark/data/spark-events:/opt/spark/data/spark-events
-       - ./files/spark/data/local:/opt/spark/data/local
+       - ./files/spark:/opt/spark/data
+       - ./files/hive:/opt/hive/data
+       - ./files/hadoop:/opt/hadoop/data
        - $SPARK_DATA_DIR:/home/user/root
     environment:
       - "SPARK_MASTER_HOST=spark-master"
@@ -55,8 +54,7 @@ services:
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
-      - $SPARK_DATA_DIR:/home/user/root
+      - $HOME/Documents:/home/user/root
   spark-worker-1:
     image: spark-worker:2.7.7
     container_name: spark-worker-1
@@ -65,7 +63,6 @@ services:
       - spark-master
     ports:
       - "8081:8081"
-    env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-1"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -73,16 +70,14 @@ services:
       - "SPARK_WORKER_PORT=6066"
       - "SPARK_WORKER_WEBUI_PORT=8081"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
     networks: 
       spark-network:
         ipv4_address: 10.5.0.3
     volumes:
-       - ./files/spark/data:/opt/spark/data
-       - ./files/spark/data/apps:/opt/spark/data/spark-apps
-       - ./files/spark/data/spark-events:/opt/spark/data/spark-events
-       - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/home/user/root
+       - ./files/spark:/opt/spark/data
+       - ./files/hive:/opt/hive/data
+       - ./files/hadoop:/opt/hadoop/data
+       - $HOME/Documents:/home/user/root
   spark-worker-2:
     image: spark-worker:2.7.7
     container_name: spark-worker-2
@@ -91,24 +86,21 @@ services:
       - spark-master
     ports:
       - "8084:8084"
-    env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-2"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
-      - "SPARK_WORKER_WEBUI_PORT=8081"
+      - "SPARK_WORKER_WEBUI_PORT=8084"
       - "HOST=local"
-      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
     networks: 
       spark-network:
         ipv4_address: 10.5.0.4
     volumes:
-       - ./files/spark-data:/opt/spark/data
-       - ./files/spark-data-apps:/opt/spark/data/spark-apps
-       - ./files/spark-data-events:/opt/spark/data/spark-events
-       - ./files/spark-data-local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/home/user/jovyan
+       - ./files/spark:/opt/spark/data
+       - ./files/hive:/opt/hive/data
+       - ./files/hadoop:/opt/hadoop/data
+       - $HOME/Documents:/home/user/root
   spark-worker-3:
     image: spark-worker:2.7.7
     container_name: spark-worker-3
@@ -117,25 +109,21 @@ services:
       - spark-master
     ports:
       - "8085:8085"
-    env_file: ./env/spark-worker.sh
     environment:
       - "SPARK_LOCAL_IP=spark-worker-3"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
       - "SPARK_WORKER_PORT=6066"
       - "SPARK_WORKER_WEBUI_PORT=8085"
-      - "SPARK_WORKER_WEBUI_PORT=8081"
-      - "SPARK_LOCAL_DIRS=/opt/spark/data/local"
       - "HOST=local"
     networks: 
       spark-network:
         ipv4_address: 10.5.0.5
     volumes:
-       - ./files/spark/data:/opt/spark/data
-       - ./files/spark/data/apps:/opt/spark/data/spark-apps
-       - ./files/spark/data/events:/opt/spark/data/spark-events
-       - ./files/spark/data/local:/opt/spark/data/local
-       - $SPARK_DATA_DIR:/home/user/root
+       - ./files/spark:/opt/spark/data
+       - ./files/hive:/opt/hive/data
+       - ./files/hadoop:/opt/hadoop/data
+       - $HOME/Documents:/home/user/root
   jupyterlab:
     image: jupyterlab:latest
     container_name: jupyterlab
@@ -147,6 +135,8 @@ services:
         ipv4_address: 10.5.0.9
     environment:
       - "JUPYTER_ENABLE_LAB=True"
+    volumes:
+      - ./files/jupyter:/home/users/jovyan/.jupyter
 networks:
   spark-network:
     driver: bridge
