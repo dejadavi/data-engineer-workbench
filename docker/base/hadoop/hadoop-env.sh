@@ -315,7 +315,7 @@ export HADOOP_USER_CLASSPATH_FIRST="yes"
 # defined if SASL is configured for authentication of data transfer protocol
 # using non-privileged ports.
 # This will replace the hadoop.id.str Java property in secure mode.
-# export HDFS_DATANODE_SECURE_USER=hdfs
+export HDFS_DATANODE_SECURE_USER=hadoop
 
 # Supplemental options for secure datanodes
 # By default, Hadoop uses jsvc which needs to know to launch a
@@ -415,7 +415,7 @@ export HADOOP_USER_CLASSPATH_FIRST="yes"
 #
 
 # For example, to limit who can execute the namenode command,
-# export HDFS_NAMENODE_USER=hdfs
+export HDFS_NAMENODE_USER=hadoop
 export HADOOP_COMMON_DIR=$HADOOP_HOME/share/hadoop/common
 export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"

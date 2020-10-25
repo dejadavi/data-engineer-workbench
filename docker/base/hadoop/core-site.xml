@@ -1,11 +1,11 @@
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>file://home/user/root</value>
+    <value>file:///home/hadoop</value>
   </property>
   <property>
     <name>fs.default.name</name>
-    <value>file://home/user/root</value>
+    <value>file:///home/hadoop</value>
   </property>
   <property>
     <name>hadoop.tmp.dir</name>

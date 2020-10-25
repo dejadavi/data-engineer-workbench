@@ -29,6 +29,13 @@ ENV SPARK_MASTER_LOG=/opt/spark/logs
 ENV SPARK_WORKER_LOG=/opt/spark/logs
 ENV PYSPARK_PYTHON=/usr/bin/python3
 
+
+ARG USER=hadoop
+ARG GROUP=hadoop
+ARG UID=5000
+ARG GID=5000
+
+
 RUN mkdir -p /opt/hive && \ 
     mkdir -p /opt/hadoop && \
     mkdir -p /opt/livy && \
@@ -116,14 +123,17 @@ RUN cd /tmp && wget --no-verbose "https://downloads.apache.org/hive/hive-${HIVE_
     mv "apache-hive-${HIVE_VERSION}-bin"/* /opt/hive && \
     rm "apache-hive-${HIVE_VERSION}-bin.tar.gz"
 
-RUN mkdir -p /opt/spark/data/spark-events &&\
+RUN mkdir -p /tmp/spark-events &&\
     mkdir -p /opt/spark/data/spark-apps &&\
     mkdir -p /opt/spark/data/local &&\
+    mkdir -p /opt/spark/logs &&\
+    mkdir -p /opt/livy/logs &&\
+    mkdir -p /opt/hive/logs &&\
     mkdir -p /tmp/spark-events &&\
     mkdir -p /sparkdata &&\
     mkdir -p /opt/spark/logs &&\
     mkdir -p /opt/hive/data && \ 
-    mkdir -p /opt/hadoop/data && \
+    mkdir -p /opt/hadoop/data &&\
     mkdir -p /opt/livy/data
 
 COPY spark/*.xml $SPARK_HOME/
@@ -142,7 +152,20 @@ WORKDIR $HIVE_HOME/conf
 
 RUN mvn verify
 RUN rm -rf ~/.m2
-COPY spark/init-hive.sh /init-hive.sh 
-RUN chmod +x /init-hive.sh 
-    
+COPY spark/init-hive.sh /opt/hive/init-hive.sh 
+RUN chmod +x /opt/hive/init-hive.sh &&\
+    chown -R $GID:$UID /opt/hive/init-hive.sh 
+
+
+RUN groupadd -g ${GID} ${GROUP} &&\
+    useradd -m -u ${UID} -g ${GID} -s /bin/bash hadoop &&\
+    chown -R $GID:$UID /home/hadoop &&\
+    chmod g+s /home/hadoop &&\
+    chown -R $GID:$UID /opt/* &&\
+    chmod g+s /home/* &&\
+    chown -R $GID:$UID /tmp &&\
+    chmod g+s /tmp
+
+USER hadoop
+
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

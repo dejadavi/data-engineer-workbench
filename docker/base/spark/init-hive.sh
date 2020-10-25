@@ -1,9 +1,9 @@
 #!/bin/bash
 
-FILE=/init
+FILE=/home/hadoop
 if [ ! -f "$FILE" ]; then
 
     sleep 5
     schematool -dbType mysql -initSchema
-    touch /init
+    touch /home/hadoop/init
 fi

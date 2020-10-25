@@ -3,9 +3,10 @@
 set -e
 
 mkdir -p ./files/jupyter
-mkdir -p ./files/spark/spark-events
 mkdir -p ./files/hive
+mkdir -p ./files/spark
 mkdir -p ./files/hadoop
+mkdir -p $HOME/Workdir
 
 docker build -t spark-base:2.7.7 ./docker/base
 docker build -t spark-master:2.7.7 ./docker/spark-master

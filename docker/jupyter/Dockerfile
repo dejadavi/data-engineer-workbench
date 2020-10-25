@@ -7,9 +7,11 @@ COPY requirements.txt /tmp/requirements.txt
 RUN /opt/conda/bin/python3 -m pip install -r /tmp/requirements.txt && \
 rm -rf /tmp/requirements.txt 
 
-RUN /opt/conda/bin/python3 -m pip install sparkmagic && \
+RUN /opt/conda/bin/python3 -m pip install sparkmagic qgrid && \
     /opt/conda/bin/python3 -m jupyter nbextension enable --py --sys-prefix widgetsnbextension && \
-    /opt/conda/bin/python3 -m jupyter labextension install "@jupyter-widgets/jupyterlab-manager"
+    /opt/conda/bin/python3 -m jupyter nbextension enable --py --sys-prefix qgrid &&\
+    /opt/conda/bin/python3 -m jupyter labextension install "@jupyter-widgets/jupyterlab-manager" &&\
+    /opt/conda/bin/python3 -m jupyter labextension install qgrid2
  
 RUN /opt/conda/bin/python3 -m pip show sparkmagic && \
     cd /opt/conda/lib/python3.8/site-packages && \

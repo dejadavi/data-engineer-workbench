@@ -1,6 +1,7 @@
 FROM spark-base:2.7.7
 
-RUN mkdir -p /opt/livy
+
+USER root
 
 WORKDIR /tmp
 
@@ -11,11 +12,11 @@ RUN cd "/tmp" && \
     rm -rf "apache-livy-0.7.0-incubating-bin.zip"
 
 COPY log4j.properties $LIVY_CONF_DIR/log4j.properties
-COPY livy.conf /opt/livy/conf
+COPY livy.conf $LIVY_CONF_DIR/conf
 COPY hive-site.xml /opt/livy/hive-site.xml
-
-RUN mkdir /opt/livy/logs
+USER root
 COPY start-livy.sh /opt/livy/bin/start-livy.sh
-
-EXPOSE  0-65535
+RUN chown hadoop:hadoop -R /opt/livy/bin/start-livy.sh &&  chown hadoop:hadoop -R /opt/livy/logs
+USER hadoop
+EXPOSE  8998
 CMD ["/bin/bash", "/opt/livy/bin/start-livy.sh"]
