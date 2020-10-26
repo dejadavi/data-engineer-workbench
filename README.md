@@ -6,9 +6,9 @@ Data Engineering Docker-Compose Stack
     export BENCH_DATA_DIR=<Some Dir> >> ~/.bashrc && \
     source ~/.bashrc
 
-2. ) From The Root Of This Directory, and with  Run:
+2. ) From the root of this directory, run:
 
-    ./build-images.sh       
+    ./dewb init
 
 This builds a (very large) base image with the Spark, Hive and Hadoop binaries and several worker services on top of that. 
 
@@ -16,6 +16,6 @@ This builds a (very large) base image with the Spark, Hive and Hadoop binaries a
 https://www.youtube.com/watch?v=YAWd1Q9Xd-E
 
 
-4.) Run `docker-compose up`
+4. ) Run `./dewb up` Look for the jupyterlab "127" hostname with the jupyterlogin token appended in the command terminal output for your jupyterlab brower url.
 
-5.) Be brilliant, because you are.
+5. ) Be brilliant.

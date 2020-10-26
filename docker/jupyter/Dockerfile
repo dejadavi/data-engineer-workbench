@@ -20,15 +20,15 @@ RUN /opt/conda/bin/python3 -m pip show sparkmagic && \
     /opt/conda/bin/jupyter kernelspec install  --sys-prefix sparkmagic/kernels/sparkrkernel && \
     /opt/conda/bin/jupyter kernelspec list
 
-
 ENV SPARKMAGIC_CONF_DIR=/opt/conda/bin/sparkmagic
 RUN mkdir $SPARKMAGIC_CONF_DIR
 COPY sparkmagic_config.json $SPARKMAGIC_CONF_DIR/config.json
 
-RUN fix-permissions /etc/jupyter/ && fix-permissions /home/jovyan
+RUN fix-permissions /etc/jupyter/ && \ 
+    fix-permissions /home/jovyan && \
+    fix-permissions /opt/conda
 
 ENV JUPYTER_ENABLE_LAB=True
 RUN jupyter kernelspec list
-
-
+USER jovyan
 EXPOSE 8888
