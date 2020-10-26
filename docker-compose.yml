@@ -24,7 +24,7 @@ services:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
        - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:$HADOOP_HOME
+       - $BENCH_DATA_DIR:/home/hadoop
     environment:
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -55,7 +55,7 @@ services:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
        - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:$HADOOP_HOME
+       - $BENCH_DATA_DIR:/home/hadoop
   spark-worker-2:
     image: spark-worker:2.7.7
     container_name: spark-worker-2
@@ -78,7 +78,7 @@ services:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
        - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:$HADOOP_HOME
+       - $BENCH_DATA_DIR:/home/hadoop
   livy:
       image: livy:0.7.0
       container_name: livy
@@ -92,7 +92,7 @@ services:
         - ./files/spark:/opt/spark/data
         - ./files/hive:/opt/hive/data
         - ./files/hadoop:/opt/hadoop/data
-        - $BENCH_DATA_DIR:$HADOOP_HOME
+        - $BENCH_DATA_DIR:/home/hadoop
       environment:
         - "SPARK_MASTER_HOST=spark-master"
         - "SPARK_PUBLIC_DNS=127.0.0.1"
@@ -100,7 +100,7 @@ services:
         - "SPARK_MASTER_PORT=7077"
         - "SPARK_WORKER_PORT=6066"
         - "HOST=local"
-        - $BENCH_DATA_DIR:$HADOOP_HOME
+        - $BENCH_DATA_DIR:/home/hadoop
   jupyterlab:
     image: jupyterlab:latest
     container_name: jupyterlab
@@ -114,7 +114,7 @@ services:
       - "JUPYTER_ENABLE_LAB=True"
     volumes:
       - ./files/jupyter:/home/jovyan/.jupyter
-      - $HOME/workdir:/home/jovyan
+      - $BENCH_DATA_DIR:/home/jovyan
 networks:
   spark-network:
     driver: bridge

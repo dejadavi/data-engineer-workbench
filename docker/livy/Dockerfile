@@ -18,5 +18,6 @@ USER root
 COPY start-livy.sh /opt/livy/bin/start-livy.sh
 RUN chown hadoop:hadoop -R /opt/livy/bin/start-livy.sh &&  chown hadoop:hadoop -R /opt/livy/logs
 USER hadoop
+WORKDIR /home/hadoop
 EXPOSE  8998
 CMD ["/bin/bash", "/opt/livy/bin/start-livy.sh"]

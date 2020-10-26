@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 4
 
 . "/opt/spark/sbin/spark-config.sh"
 . "/opt/spark/bin/load-spark-env.sh"
