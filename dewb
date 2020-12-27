@@ -30,12 +30,12 @@ init(){
 }
 
 pyspark(){
-    docker-compose-exec -it spark-master:2.7.7 bash -c "pyspark" >&2
+    docker-compose exec -it spark-master:2.7.7 bash -c "pyspark" >&2
 }
 
 hive(){
 
-    docker-compose-exec -it spark-master:2.7.7 bash -c "hive" >&2
+    docker-compose exec -it spark-master:2.7.7 bash -c "hive" >&2
 }
 
 up(){
