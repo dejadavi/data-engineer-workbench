@@ -1,9 +1,9 @@
-FROM openjdk:8-buster
+FROM openjdk:11-buster
 
 ENV DAEMON_RUN=true
 
-ENV HADOOP_VERSION=2.7.7
-ENV HADOOP_VERSION_SPARK=2.7
+ENV HADOOP_VERSION=3.0.1
+ENV HADOOP_VERSION_SPARK=3.0
 ENV HADOOP_HOME=/opt/hadoop/hadoop-${HADOOP_VERSION} 
 ENV HADOOP_PREFIX=/opt/hadoop/hadoop-${HADOOP_VERSION} 
 ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
@@ -13,14 +13,14 @@ ENV HADOOP_CLASSPATH="$(hadoop classpath):$HADOOP_HOME/share/hadoop/tools/lib/*"
 ENV HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib"
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HADOOP_HOME/lib/native
 
-ENV SCALA_VERSION=2.11.12
+ENV SCALA_VERSION=2.12
 ENV SCALA_HOME=/usr/share/scala
 ENV SCALA_HOME=/usr/share/scala
-ENV HIVE_VERSION=2.3.7
+ENV HIVE_VERSION=2.3.8
 ENV HIVE_HOME=/opt/hive
 ENV HIVE_CONF_DIR=/opt/hive/conf
 
-ENV SPARK_VERSION=2.4.7
+ENV SPARK_VERSION=3.0.1
 ENV SPARK_HOME=/opt/spark
 ENV SPARK_MASTER_PORT=7077
 ENV SPARK_MASTER=spark://spark-master:7077
@@ -31,8 +31,8 @@ ENV PYSPARK_PYTHON=/usr/bin/python3
 ENV SPARK_LOCAL_DIR=/tmp
 
 
-ARG USER=hadoop
-ARG GROUP=hadoop
+ARG USER=spark
+ARG GROUP=spark
 ARG UID=5000
 ARG GID=5000
 
@@ -57,14 +57,14 @@ RUN apt-get update -y && \
     apt-get install curl jq gzip unzip subversion maven  libzbar-dev libblas-dev liblapack-dev gfortran\
     g++ wget procps curl ca-certificates openssl less htop dumb-init cmake g++ gcc  -y
 
-RUN cd /opt && wget https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tgz &&\
-    tar xzf /opt/Python-3.7.6.tgz &&\
-    cd Python-3.7.6 &&\
+RUN cd /opt && wget https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tgz &&\
+    tar xzf /opt/Python-3.8.6.tgz &&\
+    cd Python-3.8.6 &&\
     ./configure --enable-optimizations &&\
     make altinstall &&\
-    ln -sfn /usr/local/bin/python3.7 /usr/bin/python3 &&\
-    ln -snf /usr/local/bin/python3.7 python3 &&\
-    cd /opt && rm -f /opt/Python-3.7.6.tgz &&\
+    ln -sfn /usr/local/bin/python3.8 /usr/bin/python3 &&\
+    ln -snf /usr/local/bin/python3.8 python3 &&\
+    cd /opt && rm -f /opt/Python-3.8.6.tgz &&\
     /usr/bin/python3 --version &&\
     rm -rf "/tmp/"* &&\ 
     rm -rf /var/lib/apt/lists/*
@@ -87,42 +87,31 @@ RUN  /usr/bin/python3 -m pip install --upgrade pip &&\
     fastavro\
     nlplib\
     koalas\
-    seaborn\
-    great-expectations
-
-##Install scala
-RUN cd "/tmp" && \
-    wget --no-verbose "https://downloads.lightbend.com/scala/${SCALA_VERSION}/scala-${SCALA_VERSION}.tgz" && \
-    tar xzf "scala-${SCALA_VERSION}.tgz" && \
-    mkdir "${SCALA_HOME}" && \
-    rm "/tmp/scala-${SCALA_VERSION}/bin/"*.bat && \
-    mv "/tmp/scala-${SCALA_VERSION}/bin" "/tmp/scala-${SCALA_VERSION}/lib" "${SCALA_HOME}" && \
-    ln -s "${SCALA_HOME}/bin/"* "/usr/bin/" && \
-    rm -rf "/tmp/"*
+    seaborn
 
 RUN cd /tmp && export PATH="/usr/local/sbt/bin:$PATH" && \
     apt-get update -y && \
-    apt-get install ca-certificates wget tar && \
+    apt-get install  -y ca-certificates wget scala tar && \
     mkdir -p "/usr/local/sbt" && \
     wget -qO - --no-check-certificate "https://github.com/sbt/sbt/releases/download/v1.3.13/sbt-1.3.13.tgz" | tar xz -C /usr/local/sbt --strip-components=1 && \
     sbt sbtVersion && \
     rm -rf "/tmp/"* && \ 
     rm -rf /var/lib/apt/lists/* 
 
-RUN cd /tmp && wget --no-verbose "http://www.gtlib.gatech.edu/pub/apache/hadoop/common/hadoop-${HADOOP_VERSION}/hadoop-${HADOOP_VERSION}.tar.gz" && \
+RUN cd /tmp && wget --no-verbose "https://archive.apache.org/dist/hadoop/common/hadoop-3.0.1/hadoop-3.0.1.tar.gz" && \
     tar xzvf hadoop-${HADOOP_VERSION}.tar.gz && \
     mv hadoop-${HADOOP_VERSION} /opt/hadoop  && \
     rm hadoop-${HADOOP_VERSION}.tar.gz
 
-RUN cd /tmp && wget --no-verbose "https://apache.cs.utah.edu/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz" && \
-    tar xzf "spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz" && \
-    mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}/* /opt/spark && \
-    rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION_SPARK}.tgz
+RUN cd /tmp && wget --no-verbose "https://mirrors.gigenet.com/apache/spark/spark-3.0.1/spark-3.0.1-bin-hadoop3.2.tgz" && \
+    tar xzf "spark-3.0.1-bin-hadoop3.2.tgz" && \
+    mv spark-3.0.1-bin-hadoop3.2/* /opt/spark && \
+    rm spark-3.0.1-bin-hadoop3.2.tgz
 
-RUN cd /tmp && wget --no-verbose "https://downloads.apache.org/hive/hive-${HIVE_VERSION}/apache-hive-${HIVE_VERSION}-bin.tar.gz" && \
-    tar xzf "apache-hive-${HIVE_VERSION}-bin.tar.gz" && \
-    mv "apache-hive-${HIVE_VERSION}-bin"/* /opt/hive && \
-    rm "apache-hive-${HIVE_VERSION}-bin.tar.gz"
+RUN cd /tmp && wget --no-verbose "https://mirrors.sonic.net/apache/hive/hive-3.1.2/apache-hive-3.1.2-bin.tar.gz" && \
+    tar xzf "apache-hive-3.1.2-bin.tar.gz" && \
+    mv "apache-hive-3.1.2-bin"/* /opt/hive && \
+    rm "apache-hive-3.1.2-bin.tar.gz"
 
 RUN mkdir -p /tmp/spark-events &&\
     mkdir -p /opt/spark/data/spark-apps &&\
@@ -131,11 +120,10 @@ RUN mkdir -p /tmp/spark-events &&\
     mkdir -p /opt/livy/logs &&\
     mkdir -p /opt/hive/logs &&\
     mkdir -p /tmp/spark-events &&\
-    mkdir -p /sparkdata &&\
     mkdir -p /opt/spark/logs &&\
     mkdir -p /opt/hive/data && \ 
     mkdir -p /opt/hadoop/data &&\
-    mkdir -p /opt/livy/data
+    mkdir -p /opt/spark/app
 
 COPY spark/*.xml $SPARK_HOME/
 COPY spark/*.conf $SPARK_HOME/conf/
@@ -147,26 +135,25 @@ ENV PATH=$SPARK_HOME/jars:$HADOOP_HOME/sbin:$JAVA_HOME:$HIVE_HOME/bin:$HIVE_HOME
 ENV PATH=/usr/local/bin:/usr/local/sbin:$PATH
 
 WORKDIR /opt/spark
-
-RUN mvn  verify
-WORKDIR $HIVE_HOME/conf
-
 RUN mvn verify
-RUN rm -rf ~/.m2
+
+WORKDIR $HIVE_HOME/conf
+RUN mvn verify
+
 COPY spark/init-hive.sh /opt/hive/init-hive.sh 
 RUN chmod +x /opt/hive/init-hive.sh &&\
     chown -R $GID:$UID /opt/hive/init-hive.sh 
 
 
 RUN groupadd -g ${GID} ${GROUP} &&\
-    useradd -m -u ${UID} -g ${GID} -s /bin/bash hadoop &&\
+    useradd -m -u ${UID} -g ${GID} -s /bin/bash spark &&\
     chown -R $GID:$UID /home/hadoop &&\
-    chmod g+s /home/hadoop &&\
+    chmod g+s /home/spark &&\
     chown -R $GID:$UID /opt/* &&\
     chmod g+s /home/* &&\
     chown -R $GID:$UID /tmp &&\
     chmod g+s /tmp
 
-USER hadoop
+USER spark
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]

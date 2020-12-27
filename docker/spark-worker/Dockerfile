@@ -1,4 +1,4 @@
-FROM spark-base:2.7.7
+FROM spark-base:3.0.1
 USER root
 COPY start-worker.sh /opt/spark/bin/start-worker.sh
 COPY spark-env.sh $SPARK_HOME/conf/spark-env.sh

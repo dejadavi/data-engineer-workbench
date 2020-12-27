@@ -9,7 +9,7 @@ services:
       spark-network:
         ipv4_address: 10.5.0.7
   spark-master:
-    image: spark-master:2.7.7
+    image: spark-master:3.0.1
     container_name: spark-master
     hostname: spark-master
     depends_on:
@@ -23,9 +23,14 @@ services:
     volumes:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
-       - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:/home/hadoop
+       - ./files/spark:/opt/spark/data
+       - ./files/m2:/opt/spark/.m2
+       - $BENCH_DATA_DIR:/home/spark
     environment:
+      - SPARK_HOME=/opt/spark
+      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
+      - PYSPARK_SUBMIT_ARGS="--packages spark-streaming3.0.1,spark:kafka,3.0.1 pyspark-shell'
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -34,7 +39,7 @@ services:
       - "SPARK_MASTER_WEBUI_PORT=8080"
       - "HOST=local"
   spark-worker-1:
-    image: spark-worker:2.7.7
+    image: spark-worker:3.0.1
     container_name: spark-worker-1
     hostname: spark-worker-1
     depends_on:
@@ -42,6 +47,9 @@ services:
     ports:
       - "8081:8081"
     environment:
+      - SPARK_HOME=/opt/spark
+      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
       - "SPARK_LOCAL_IP=spark-worker-1"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -54,10 +62,11 @@ services:
     volumes:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
-       - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:/home/hadoop
+       - ./files/spark:/opt/spark/data
+       - $BENCH_DATA_DIR:/home/spark
+       - ./files/m2:/opt/spark/.m2
   spark-worker-2:
-    image: spark-worker:2.7.7
+    image: spark-worker:3.0.1
     container_name: spark-worker-2
     hostname: spark-worker-2
     depends_on:
@@ -65,6 +74,9 @@ services:
     ports:
       - "8084:8084"
     environment:
+      - SPARK_HOME=/opt/spark
+      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
+      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
       - "SPARK_LOCAL_IP=spark-worker-2"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -77,44 +89,9 @@ services:
     volumes:
        - ./files/spark:/opt/spark/data
        - ./files/hive:/opt/hive/data
-       - ./files/hadoop:/opt/hadoop/data
-       - $BENCH_DATA_DIR:/home/hadoop
-  livy:
-      image: livy:0.7.0
-      container_name: livy
-      hostname: livy
-      ports:
-        - "8998:8998"
-      networks: 
-        spark-network:
-          ipv4_address: 10.5.0.6
-      volumes:
-        - ./files/spark:/opt/spark/data
-        - ./files/hive:/opt/hive/data
-        - ./files/hadoop:/opt/hadoop/data
-        - $BENCH_DATA_DIR:/home/hadoop
-      environment:
-        - "SPARK_MASTER_HOST=spark-master"
-        - "SPARK_PUBLIC_DNS=127.0.0.1"
-        - "SPARK_LOCAL_IP=livy"
-        - "SPARK_MASTER_PORT=7077"
-        - "SPARK_WORKER_PORT=6066"
-        - "HOST=local"
-        - $BENCH_DATA_DIR:/home/hadoop
-  jupyterlab:
-    image: jupyterlab:latest
-    container_name: jupyterlab
-    hostname: jupyterlab
-    ports:
-      - "8888:8888"
-    networks:
-      spark-network:
-        ipv4_address: 10.5.0.9
-    environment:
-      - "JUPYTER_ENABLE_LAB=True"
-    volumes:
-      - ./files/jupyter:/home/jovyan/.jupyter
-      - $BENCH_DATA_DIR:/home/jovyan
+       - ./files/spark:/opt/spark/data
+       - $BENCH_DATA_DIR:/home/spark
+       - ./files/m2:/opt/spark/.m2
 networks:
   spark-network:
     driver: bridge

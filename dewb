@@ -14,28 +14,26 @@ $$$$$$$  |$$$$$$$$\ $$  /   \$$ |$$$$$$$  |
 This shit fire$$$$                                                                                                                                                                                                                                                                                                                                        
 EOF
 
-init(){
+build(){
 
-    mkdir -p ./files/jupyter >&2
-    mkdir -p ./files/hive >&2
-    mkdir -p ./files/spark >&2
-    mkdir -p ./files/hadoop >&2
-    mkdir -p $BENCH_DATA_DIR >&2
-    docker build -t spark-base:2.7.7 ./docker/base >&2
-    docker build -t spark-master:2.7.7 ./docker/spark-master >&2
-    docker build -t spark-worker:2.7.7 ./docker/spark-worker >&2
-    docker build -t livy:0.7.0 ./docker/livy >&2
-    docker build -t mysql:8.0.0 ./docker/mysql >&2
-    docker build -t jupyterlab:latest ./docker/jupyter >&2
+    mkdir -p ./files/hive
+    mkdir -p ./files/spark
+    mkdir -p ./files/hadoop
+    mkdir -p ./files/m2
+    mkdir -p $BENCH_DATA_DIR
+    docker build -t spark-base:3.0.1 ./docker/base 
+    docker build -t spark-master:3.0.1 ./docker/spark-master
+    docker build -t spark-worker:3.0.1 ./docker/spark-worker
+    docker build -t mysql:8.0.0 ./docker/mysql
 }
 
 pyspark(){
-    docker-compose-exec -it spark-master:2.7.7 bash -c "pyspark" >&2
+    docker-compose-exec -it spark-master:3.0.1 bash -c "pyspark" >&2
 }
 
 hive(){
 
-    docker-compose-exec -it spark-master:2.7.7 bash -c "hive" >&2
+    docker-compose-exec -it spark-master:3.0.1 bash -c "hive" >&2
 }
 
 up(){
