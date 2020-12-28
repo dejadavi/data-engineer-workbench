@@ -21,16 +21,13 @@ services:
       spark-network:
         ipv4_address: 10.5.0.2
     volumes:
-       - ./files/spark:/opt/spark/data
-       - ./files/hive:/opt/hive/data
-       - ./files/spark:/opt/spark/data
+       - ./files/app:/opt/spark/app
        - ./files/m2:/opt/spark/.m2
-       - $BENCH_DATA_DIR:/home/spark
     environment:
-      - SPARK_HOME=/opt/spark
-      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
-      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
-      - PYSPARK_SUBMIT_ARGS="--packages spark-streaming3.0.1,spark:kafka,3.0.1 pyspark-shell'
+      - "SPARK_HOME=/opt/spark"
+      - "PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH"
+      - "PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH"
+      - "PYSPARK_SUBMIT_ARGS='--packages spark-streaming3.0.1,spark:kafka,3.0.1 pyspark-shell'"
       - "SPARK_LOCAL_IP=spark-master"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -47,9 +44,9 @@ services:
     ports:
       - "8081:8081"
     environment:
-      - SPARK_HOME=/opt/spark
-      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
-      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
+      - "SPARK_HOME=/opt/spark"
+      - "PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH"
+      - "PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH"
       - "SPARK_LOCAL_IP=spark-worker-1"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -60,10 +57,7 @@ services:
       spark-network:
         ipv4_address: 10.5.0.3
     volumes:
-       - ./files/spark:/opt/spark/data
-       - ./files/hive:/opt/hive/data
-       - ./files/spark:/opt/spark/data
-       - $BENCH_DATA_DIR:/home/spark
+       - ./files/app:/opt/spark/app
        - ./files/m2:/opt/spark/.m2
   spark-worker-2:
     image: spark-worker:3.0.1
@@ -74,9 +68,9 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - SPARK_HOME=/opt/spark
-      - PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH
-      - PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH
+      - "SPARK_HOME=/opt/spark"
+      - "PYTHONPATH=$SPARK_HOME/python:$SPARK_HOME/python/build:$PYTHONPATH"
+      - "PYTHONPATH=$SPARK_HOME/python/lib/py4j-*-src.zip:$PYTHONPATH"
       - "SPARK_LOCAL_IP=spark-worker-2"
       - "SPARK_PUBLIC_DNS=127.0.0.1"
       - "SPARK_MASTER_PORT=7077"
@@ -87,10 +81,7 @@ services:
       spark-network:
         ipv4_address: 10.5.0.4
     volumes:
-       - ./files/spark:/opt/spark/data
-       - ./files/hive:/opt/hive/data
-       - ./files/spark:/opt/spark/data
-       - $BENCH_DATA_DIR:/home/spark
+       - ./files/app:/opt/spark/app
        - ./files/m2:/opt/spark/.m2
 networks:
   spark-network:

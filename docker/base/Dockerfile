@@ -54,20 +54,20 @@ RUN apt-get update -y &&\
 RUN apt-get update -y && \
     apt-get install build-essential -y &&\
     apt-get update && \
-    apt-get install curl jq gzip unzip subversion maven  libzbar-dev libblas-dev liblapack-dev gfortran\
+    apt-get install curl jq gzip unzip subversion maven  libzbar-dev lsb-release libblas-dev liblapack-dev gfortran\
     g++ wget procps curl ca-certificates openssl less htop dumb-init cmake g++ gcc  -y
 
-RUN cd /opt && wget https://www.python.org/ftp/python/3.8.6/Python-3.8.6.tgz &&\
-    tar xzf /opt/Python-3.8.6.tgz &&\
-    cd Python-3.8.6 &&\
-    ./configure --enable-optimizations &&\
-    make altinstall &&\
-    ln -sfn /usr/local/bin/python3.8 /usr/bin/python3 &&\
-    ln -snf /usr/local/bin/python3.8 python3 &&\
-    cd /opt && rm -f /opt/Python-3.8.6.tgz &&\
-    /usr/bin/python3 --version &&\
-    rm -rf "/tmp/"* &&\ 
-    rm -rf /var/lib/apt/lists/*
+# RUN cd /opt && wget https://www.python.org/ftp/python/3.7.6/Python-3.7.6.tgz &&\
+#     tar xzf /opt/Python-3.7.6.tgz &&\
+#     cd Python-3.7.6 &&\
+#     ./configure --enable-optimizations &&\
+#     make altinstall &&\
+#     ln -sfn /usr/local/bin/python3.7 /usr/bin/python3 &&\
+#     ln -snf /usr/local/bin/python3.7 python3 &&\
+#     cd /opt && rm -f /opt/Python-3.7.6.tgz &&\
+#     /usr/bin/python3 --version &&\
+#     rm -rf "/tmp/"* &&\ 
+#     rm -rf /var/lib/apt/lists/*
 
 RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&\
     python3 get-pip.py --force-reinstall && export PATH=/usr/bin:usr/local/bin:$PATH &&\
@@ -147,7 +147,7 @@ RUN chmod +x /opt/hive/init-hive.sh &&\
 
 RUN groupadd -g ${GID} ${GROUP} &&\
     useradd -m -u ${UID} -g ${GID} -s /bin/bash spark &&\
-    chown -R $GID:$UID /home/hadoop &&\
+    chown -R $GID:$UID /home/spark &&\
     chmod g+s /home/spark &&\
     chown -R $GID:$UID /opt/* &&\
     chmod g+s /home/* &&\

@@ -1,7 +1,3 @@
 qgrid
-great-expectations
-pandas
-seaborn
-matplotlib
-numpy
 awscli
+jupyterlab
